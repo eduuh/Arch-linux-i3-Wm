@@ -1,6 +1,6 @@
-# The Voidrice (Luke Smith <https://lukesmith.xyz>'s dotfiles)
+# The Voidrice (My colemak Keyboard Layout Version)
 
-These are the dotfiles deployed by [LARBS](https://larbs.xyz) and as seen on [my YouTube channel](https://youtube.com/c/lukesmithxyz).
+I use most of the terminal configurations. But since i used colemak keyboard layout this brings the need to remap most of the configurations.
 
 - Very useful scripts are in `~/.local/bin/`
 - Settings for:
