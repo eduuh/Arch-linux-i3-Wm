@@ -12,12 +12,12 @@ label=🎼
 interval=once
 signal=11
 
-[news]
-interval=once
-signal=6
 
-#[iplocate]
-#interval=30
+[clock]
+label=📅
+interval=30
+[iplocate]
+interval=30
 
 [pacpackages]
 interval=once
@@ -35,11 +35,11 @@ signal=5
 interval=180
 signal=12
 
-#[memory]
-#interval=30
+[memory]
+interval=30
 
-#[cpu]
-#interval=15
+[cpu]
+interval=15
 
 [volume]
 interval=once
@@ -57,9 +57,6 @@ signal=10
 command=battery BAT0
 interval=5
 
-[clock]
-label=📅
-interval=30
 
 [internet]
 interval=10
