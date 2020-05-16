@@ -4,18 +4,45 @@
 "| |  | | | |   | |\  | \ V /  | || |  | |  _ <| |___
 "|_|  |_| |_|   |_| \_|  \_/  |___|_|  |_|_| \_\\____|
 scriptencoding utf-8
-source ~/.config/nvim/plugins.vim
 
+if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
+	echo "Downloading junegunn/vim-plug to manage plugins..."
+	silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/
+	silent !curl "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim
+	autocmd VimEnter * PlugInstall
+endif
+
+call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"'))
+
+" Javascript , jsx and react
+
+Plug 'mattn/emmet-vim'
+Plug 'sheerun/vim-polyglot'
+" ES2015 code snippets (Optional)
+Plug 'epilande/vim-es2015-snippets'
+" React code snippets
+Plug 'epilande/vim-react-snippets'
+" Conguer of Completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" ColorScheme
+Plug 'dikiaap/minimalist'
+  " Improved motion in Vim
+Plug 'easymotion/vim-easymotion'
+
+" Denite - Fuzzy finding, buffer management
+Plug 'Shougo/denite.nvim'
+
+call plug#end()
 " Author: @edwinmuraya
+
 let g:mapleader =","
 
 " Editor theme
+
 set background=dark
-try
-  colorscheme OceanicNext
-catch
-  colorscheme slate
-endtry
+
+colorscheme minimalist
 
 set mouse=a
 set nohlsearch
@@ -29,6 +56,7 @@ set hidden
 " changing the number of spaces tab counts for.
 set softtabstop=2
 " Indentatation amount for < and > commands
+
 set shiftwidth=2
 
 " Don't highight current cursor line
@@ -47,6 +75,7 @@ if has('persistent_undo')
   set undolevels=3000
   set undoreload=10000
 endif
+
 set backupdir=~/.local/share/nvim/backup " don't put backups in current dir
 set backup
 set noswapfile
@@ -76,6 +105,7 @@ set splitbelow splitright
 " Nerd tree
 map <leader>n :NERDTreeToggle<CR>
 " automatically close nvim in nerdTree is only Thing open
+
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
