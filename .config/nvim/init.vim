@@ -3,7 +3,7 @@
 "| |\/| |\ V /  |  \| |\ \ / / | || |\/| | |_) | |
 "| |  | | | |   | |\  | \ V /  | || |  | |  _ <| |___
 "|_|  |_| |_|   |_| \_|  \_/  |___|_|  |_|_| \_\\____|
-scriptencoding utf-8
+" Author: @edwinmuraya
 
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
@@ -12,38 +12,69 @@ if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autolo
 	autocmd VimEnter * PlugInstall
 endif
 
+scriptencoding utf-8
+
 call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"'))
 
 " Javascript , jsx and react
-
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'airblade/vim-gitgutter'
+" Plug 'leafgarland/typescript-vim'
+Plug 'HerringtonDarkholme/yats.vim'
+"javascript
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'jparise/vim-graphql'
+
+Plug 'ianks/vim-tsx'
+Plug 'kien/ctrlp.vim'
 " ES2015 code snippets (Optional)
 Plug 'epilande/vim-es2015-snippets'
+" File Exproler
+Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
 " React code snippets
 Plug 'epilande/vim-react-snippets'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'w0rp/ale'
 " Conguer of Completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+let g:coc_global_extensions=['coc-json', 'coc-tsserver', 'coc-emmet' ]
 
+" status bar current file information
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+let g:airline_powerline_fonts = 1
+" adding the git branch on the status bar
+Plug 'tpope/vim-fugitive'
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
 " ColorScheme
 Plug 'dikiaap/minimalist'
   " Improved motion in Vim
 Plug 'easymotion/vim-easymotion'
 
-" Denite - Fuzzy finding, buffer management
-Plug 'Shougo/denite.nvim'
+" colorised brackets
+Plug 'frazrepo/vim-rainbow'
+let g:rainbow_active = 1
 
+Plug 'jiangmiao/auto-pairs'
 call plug#end()
-" Author: @edwinmuraya
-
 let g:mapleader =","
 
 " Editor theme
 
 set background=dark
-
 colorscheme minimalist
-
 set mouse=a
 set nohlsearch
 " Yank and paste with thes system clipboard
@@ -89,9 +120,6 @@ set nocompatible
 filetype plugin on
 syntax on
 
-let g:oceanic_next_terminal_bold = 1
-let g:oceanic_next_terminal_italic = 1
-
 set encoding=utf-8
 set number relativenumber
 " Enable autocompletion:
@@ -102,13 +130,10 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
 set splitbelow splitright
 
-" Nerd tree
-map <leader>n :NERDTreeToggle<CR>
-" automatically close nvim in nerdTree is only Thing open
 
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-
+" enabling syntax highlight
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
 " Shortcutting split navigation, saving a keypress:
 map <C-h> <C-w>h
 map <C-j> <C-w>j
@@ -151,8 +176,8 @@ map Q gq
 map <leader>s :!clear && shellcheck %<CR>
 
 " Open my bibliography file in split
-map <leader>b :vsp<space>$BIB<CR>
-map <leader>r :vsp<space>$REFER<CR>
+"map <leader>b :vsp<space>$BIB<CR>
+"map <leader>r :vsp<space>$REFER<CR>
 
 " Replace all is aliased to S.
 nnoremap S :%s//g<Left><Left>
@@ -172,28 +197,15 @@ noremap srh <C-w>b<C-w>K
 noremap srv <C-w>b<C-w>H
 
 " Ensure files are read as what I want:
-let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-map <leader>v :VimwikiIndex
-let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
-autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
-autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
-autocmd BufRead,BufNewFile *.tex set filetype=tex
 
 " Save file as sudo on files that require root permission
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
-
-" Enable Goyo by default for mutt writting
-autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80
-autocmd BufRead,BufNewFile /tmp/neomutt* :Goyo | set bg=light
-autocmd BufRead,BufNewFile /tmp/neomutt* map ZZ :Goyo\|x!<CR>
-autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
 
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
 autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritepre * %s/\n\+\%$//e
 
-" When shortcut files are updated, renew bash and ranger configs with new material:
-autocmd BufWritePost files,directories !shortcuts
+" When shortcut files are updated, renew bash and ranger configs with new material:autocmd BufWritePost files,directories !shortcuts
 " Run xrdb whenever Xdefaults or Xresources are updated.
 autocmd BufWritePost *Xresources,*Xdefaults !xrdb %
 " Update binds when sxhkdrc is updated.
@@ -226,10 +238,41 @@ noremap tmi :+tabmove<CR>
 "Press <space> + q to close the window below the current window.
 nnoremap < <<
 nnoremap > >>
+
 let &t_SI = "\<esc>[5 q"  " blinking I-beam in insert mode
 let &t_SR = "\<esc>[3 q"  " blinking underline in replace mode
 let &t_EI = "\<esc>[ q"  " default cursor (usually blinking block) otherwise
 
+
+
+" Nerd tree
+map <leader>w :NERDTreeToggle<CR>
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeIgnore = []
+let g:NERDTreeStatusline = ''
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
+
+" automatically close nvim in nerdTree is only Thing open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+let g:ale_fixers = {
+  \ 'javascript' : ['eslint']
+  \ }
+
+" let g:ale_sign_error= '❌'
+" let g:ale_sign_warning = '⚠ '
 let g:user_emmet_leader_key='<Tab>'
 let g:user_emmet_settings = {
   \  'javascript.jsx' : {
@@ -237,12 +280,6 @@ let g:user_emmet_settings = {
     \  },
   \}
 
-let g:ale_sign_error = '●' " Less aggressive than the default '>>'
-let g:ale_sign_warning = '.'
-let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\}
 
 " Conquer of Completion settings
 " use <tab> for trigger completion and navigate to next complete item
@@ -255,8 +292,6 @@ inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
 
 if exists('*complete_info')
   inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -278,14 +313,23 @@ nmap <silent> gr <Plug>(coc-references)
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
+function! ShowDocIfNoDiagnostic(timer_id)
+  if (coc#util#has_float() == 0)
+    silent call CocActionAsync('doHover')
   endif
 endfunction
 
+function! s:show_hover_doc()
+  call timer_start(500, 'ShowDocIfNoDiagnostic')
+endfunction
+
+autocmd CursorHoldI * :call <SID>show_hover_doc()
+autocmd CursorHold * :call <SID>show_hover_doc()
+
+nnoremap <silent> <space>d :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <space>s :<C-u>CocList -I symbols<cr>
+
+nmap <leader>do <Plug>(coc-codeaction)
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
@@ -293,9 +337,10 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 
-" Formatting selected code.
+" Formatting selecten code.
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
+
 
 augroup mygroup
   autocmd!
